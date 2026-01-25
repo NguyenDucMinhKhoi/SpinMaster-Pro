@@ -25,9 +25,12 @@ class WheelManager {
         this.wheel.innerHTML = "";
         const segmentAngle = 360 / this.names.length;
         let gradientStr = [];
+        
+        // Shuffle màu để tránh trùng cạnh nhau
+        const shuffledColors = this.shuffleColors();
 
         this.names.forEach((name, index) => {
-            const color = this.colors[index % this.colors.length];
+            const color = shuffledColors[index % shuffledColors.length];
             gradientStr.push(`${color} ${index * segmentAngle}deg ${(index + 1) * segmentAngle}deg`);
 
             const span = document.createElement("span");
@@ -39,8 +42,7 @@ class WheelManager {
         });
 
         this.wheel.style.background = `conic-gradient(${gradientStr.join(", ")})`;
-        this.wheel.style.transform = `rotate(0deg)`;
-        this.currentRotation = 0;
+        // KHÔNG reset transform - giữ nguyên vị trí hiện tại
     }
 
     setNames(names) {
@@ -125,6 +127,16 @@ class WheelManager {
 
     getColors() {
         return this.colors;
+    }
+
+    shuffleColors() {
+        // Fisher-Yates shuffle
+        const shuffled = [...this.colors];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
 }
 

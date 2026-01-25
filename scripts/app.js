@@ -42,6 +42,13 @@ function closeModal() {
     audioManager.stopApplause();
 }
 
+// Remove winner from list
+function removeWinnerFromList() {
+    const winnerName = document.getElementById('winnerName').innerText;
+    uiManager.removeWinner(winnerName);
+    audioManager.stopApplause();
+}
+
 // Utility functions for UI
 function shuffleList() {
     uiManager.shuffleItems();
@@ -56,7 +63,7 @@ function addNewItem() {
 }
 
 function updateListFromTextarea() {
-    if (uiManager) {
+    if (uiManager && !uiManager.isUpdatingProgrammatically) {
         uiManager.loadFromTextarea();
     }
 }

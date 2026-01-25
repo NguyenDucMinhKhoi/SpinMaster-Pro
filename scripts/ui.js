@@ -5,6 +5,7 @@ class UIManager {
         this.items = [];
         this.draggedItem = null;
         this.currentTab = 'entries';
+        this.isUpdatingProgrammatically = false;
     }
 
     init() {
@@ -32,6 +33,7 @@ class UIManager {
             enabled: true
         }));
         
+        // Luôn update wheel
         this.updateWheel();
         this.updateCounter();
     }
@@ -142,8 +144,10 @@ class UIManager {
     }
 
     showWinnerModal(winner) {
+        const modal = document.getElementById('resultModal');
         document.getElementById('winnerName').innerText = winner;
-        document.getElementById('resultModal').style.display = 'flex';
+        modal.classList.add('show');
+        modal.style.display = 'flex';
         
         // Lưu kết quả vào lịch sử
         this.saveResult(winner);
@@ -157,7 +161,44 @@ class UIManager {
     }
 
     closeWinnerModal() {
-        document.getElementById('resultModal').style.display = 'none';
+        const modal = document.getElementById('resultModal');
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+    }
+
+    removeWinner(winnerName) {
+        const textarea = document.getElementById('nameInput');
+        const winnerElement = document.getElementById('winnerName');
+        if (!textarea) return;
+        
+        // Hiệu ứng xóa
+        winnerElement.classList.add('removing');
+        
+        setTimeout(() => {
+            // Set flag để ngăn trigger oninput
+            this.isUpdatingProgrammatically = true;
+            
+            // Lấy danh sách hiện tại
+            let names = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
+            
+            // Xóa TẤT CẢ các tên trùng với tên trúng giải
+            names = names.filter(name => name !== winnerName);
+            
+            // Cập nhật lại textarea
+            textarea.value = names.join('\n');
+            
+            // Cập nhật vòng quay để xóa tên
+            this.loadFromTextarea();
+            
+            // Reset flag
+            setTimeout(() => {
+                this.isUpdatingProgrammatically = false;
+            }, 100);
+            
+            // Đóng modal
+            winnerElement.classList.remove('removing');
+            this.closeWinnerModal();
+        }, 300);
     }
 
     saveResult(winner) {
