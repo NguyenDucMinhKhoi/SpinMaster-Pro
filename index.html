@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpinMaster Pro - Vòng Quay May Mắn Chuyên Nghiệp</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+    <!-- Audio Elements -->
+    <audio id="tickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+    <audio id="applauseSound" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
+
+    <div class="app-container">
+        <!-- Header Navigation -->
+        <header class="header">
+            <nav class="nav-menu">
+                <div class="brand-logo">
+                    <span class="logo-icon">🎯</span>
+                    <span class="brand-name">SpinMaster Pro</span>
+                    <span class="brand-badge">PREMIUM</span>
+                </div>
+                <button class="nav-item">
+                    <span>🎨</span>
+                    <span>Tùy chỉnh</span>
+                </button>
+                <button class="nav-item">
+                    <span>📝</span>
+                    <span>Làm mới</span>
+                </button>
+                <button class="nav-item">
+                    <span>📂</span>
+                    <span>Mở</span>
+                </button>
+                <button class="nav-item">
+                    <span>💾</span>
+                    <span>Lưu trữ</span>
+                </button>
+                <button class="nav-item">
+                    <span>📤</span>
+                    <span>Chia sẻ</span>
+                </button>
+                <button class="nav-item">
+                    <span>🔍</span>
+                    <span>BỘ SƯU TẬP</span>
+                </button>
+                <button class="nav-item">
+                    <span>⚙️</span>
+                    <span>Hơn</span>
+                </button>
+                <button class="nav-item">
+                    <span>🌐</span>
+                    <span>Tiếng Việt</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Wheel Section -->
+            <div class="wheel-section">
+                <div class="wheel-container">
+                    <div class="pointer"></div>
+                    <div class="wheel-center" onclick="spinWheel()">
+                        <span style="font-size: 16px;">▶</span>
+                    </div>
+                    <div class="wheel" id="wheel"></div>
+                </div>
+            </div>
+
+            <!-- Sidebar Panel -->
+            <aside class="sidebar-panel">
+                <!-- Tab Headers -->
+                <div class="panel-header">
+                    <button class="panel-tab active" data-tab="entries">
+                        Mục <span class="badge" id="itemCount">0</span>
+                    </button>
+                    <button class="panel-tab" data-tab="results">
+                        Các kết quả <span class="badge" id="resultCount">0</span>
+                    </button>
+                </div>
+
+                <!-- Panel Content -->
+                <div class="panel-content">
+                    <!-- Entries Tab Content -->
+                    <div id="entriesContent">
+                        <!-- Action Buttons -->
+                        <div class="panel-actions">
+                            <button class="btn-action" onclick="shuffleList()">
+                                <span>🔀</span>
+                                <span>Tráo đổi</span>
+                            </button>
+                            <button class="btn-action" onclick="sortList()">
+                                <span>↕️</span>
+                                <span>Sắp xếp</span>
+                            </button>
+                            <button class="btn-action">
+                                <span>🖼️</span>
+                                <span>Thêm ảnh</span>
+                            </button>
+                        </div>
+
+                        <!-- Advanced Checkbox -->
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" style="margin-right: 8px;">
+                                <span style="font-size: 13px; color: #666;">Nâng cao</span>
+                            </label>
+                        </div>
+
+                        <!-- Textarea để điền danh sách -->
+                        <textarea 
+                            class="textarea-input" 
+                            id="nameInput" 
+                            placeholder="Nhập tên, mỗi tên một dòng...&#10;Ví dụ:&#10;Alice&#10;Bob&#10;Charlie"
+                            oninput="updateListFromTextarea()"
+                        >Alice
+Bob
+Charlie
+David
+Emma
+Frank
+Grace
+Henry
+Isabella
+Jack</textarea>
+
+                        <!-- Item List -->
+                        <div class="item-list" id="itemList">
+                            <!-- Items will be dynamically rendered here -->
+                        </div>
+
+                        <!-- Add Button -->
+                        <button class="btn-add" onclick="addNewItem()">
+                            <span>+</span>
+                            <span>Thêm bánh xe</span>
+                        </button>
+                    </div>
+
+                    <!-- Results Tab Content -->
+                    <div id="resultsContent" style="display: none;">
+                        <div class="results-header">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #333;">Lịch sử quay</h3>
+                            <button class="btn-clear-results" onclick="uiManager.clearResults()">
+                                <span>🗑️</span>
+                                <span>Xóa tất cả</span>
+                            </button>
+                        </div>
+                        <div id="resultsContainer" class="results-list">
+                            <!-- Results will be dynamically rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Version Info -->
+                    <div class="version-info">
+                        Phiên bản 396 <span style="background: #1976d2; color: white; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-size: 10px;">New!</span>
+                        <a href="#" style="color: #1976d2; margin-left: 10px; text-decoration: none;">Changelog</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Winner Modal -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <h2>🎉 Chúng ta có người chiến thắng! 🎉</h2>
+            <div class="winner-name" id="winnerName"></div>
+            <button class="btn-close" onclick="closeModal()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/wheel.js"></script>
+    <script src="scripts/audio.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+
+</html>
