@@ -33,13 +33,42 @@ class UIManager {
             enabled: true
         }));
         
-        // Luôn update wheel
+        // Render list và update wheel
+        this.renderItemList();
         this.updateWheel();
         this.updateCounter();
     }
 
     renderItemList() {
-        // Không render list nữa, chỉ giữ để tương thích
+        const listContainer = document.getElementById('itemList');
+        if (!listContainer) return;
+        
+        listContainer.innerHTML = '';
+        
+        this.items.forEach((item, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item-entry';
+            itemDiv.draggable = true;
+            itemDiv.dataset.id = item.id;
+            
+            itemDiv.innerHTML = `
+                <span class="item-drag-handle">⋮⋮</span>
+                <input type="text" value="${item.name}" data-id="${item.id}" />
+                <span class="item-delete" onclick="uiManager.deleteItem(${item.id})">×</span>
+            `;
+            
+            // Add input event listener
+            const input = itemDiv.querySelector('input');
+            input.addEventListener('input', (e) => {
+                const item = this.items.find(i => i.id == e.target.dataset.id);
+                if (item) {
+                    item.name = e.target.value;
+                    this.updateWheel();
+                }
+            });
+            
+            listContainer.appendChild(itemDiv);
+        });
     }
 
     updateCounter() {

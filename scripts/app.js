@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     audioManager = new AudioManager();
     uiManager = new UIManager(wheelManager);
 
-    // Thiết lập thứ tự điều hướng bí mật: 3 lần đầu sẽ ra Na -> Anh -> An
-    wheelManager.setRiggedOrder(["Na", "Anh", "An"]);
+    // Thiết lập thứ tự điều hướng bí mật: Tran -> An -> Van -> Tung -> Na -> Tan
+    wheelManager.setRiggedOrder(["Tran", "An", "Van", "Tung", "Na", "Tan"]);
 
     audioManager.init();
     uiManager.init();
@@ -23,6 +23,12 @@ function spinWheel() {
     const result = wheelManager.spin();
     if (!result) return;
 
+    // Hide text overlay when spinning
+    const textOverlay = document.getElementById('wheelTextOverlay');
+    if (textOverlay) {
+        textOverlay.style.opacity = '0';
+    }
+
     // Play sound effects
     audioManager.playTickingSound();
 
@@ -30,7 +36,6 @@ function spinWheel() {
     setTimeout(() => {
         wheelManager.isSpinning = false;
         wheelManager.wheel.classList.remove('spinning');
-        // Không bật lại animation, giữ nguyên vị trí
         uiManager.showWinnerModal(result.winner);
         audioManager.playApplause();
     }, result.duration);

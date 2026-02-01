@@ -29,6 +29,7 @@ body {
     display: flex;
     align-items: center;
     height: 50px;
+    justify-content: space-between;
 }
 
 .brand-logo {
@@ -36,7 +37,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 0 20px;
-    margin-right: 20px;
+    margin-right: auto;
     border-right: 2px solid #e0e0e0;
 }
 
@@ -100,7 +101,7 @@ body {
 /* Wheel Section */
 .wheel-section {
     flex: 2;
-    padding: 40px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -111,20 +112,47 @@ body {
 
 .wheel-container {
     position: relative;
-    width: 450px;
-    height: 450px;
+    width: min(90vh, 90vw);
+    height: min(90vh, 90vw);
+    max-width: 650px;
+    max-height: 650px;
+}
+
+.wheel-text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.tap-to-spin,
+.click-to-spin {
+    font-family: sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    fill: white;
+    filter: drop-shadow(0 0 10px #000);
+}
+
+.click-to-spin {
+    font-size: 14px;
 }
 
 .pointer {
     position: absolute;
     top: 50%;
-    right: -25px;
+    right: -35px;
     transform: translateY(-50%) rotate(90deg);
     width: 0;
     height: 0;
-    border-left: 25px solid transparent;
-    border-right: 25px solid transparent;
-    border-top: 50px solid #1a237e;
+    border-left: 35px solid transparent;
+    border-right: 35px solid transparent;
+    border-top: 70px solid #1a237e;
     z-index: 10;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
@@ -133,8 +161,11 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 8px solid #fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.4), 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.3);
     transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
     position: relative;
     overflow: hidden;
@@ -159,16 +190,17 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     background-color: #fff;
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     z-index: 5;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    font-size: 24px;
     color: #333;
     cursor: pointer;
     transition: transform 0.1s;
@@ -188,16 +220,20 @@ body {
     left: 50%;
     transform-origin: 0 0;
     font-weight: 700;
-    font-size: 15px;
+    font-size: clamp(18px, 3vw, 32px);
     color: #fff;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.8),
         -1px -1px 2px rgba(0, 0, 0, 0.5),
         1px 1px 0 rgba(0, 0, 0, 0.9);
     white-space: nowrap;
-    padding-left: 10px;
+    padding: 0;
+    text-align: right;
     letter-spacing: 0.5px;
     font-family: 'Segoe UI', Arial, sans-serif;
+    width: auto;
+    max-width: 45%;
+    overflow: visible;
 }
 
 /* Sidebar Panel */

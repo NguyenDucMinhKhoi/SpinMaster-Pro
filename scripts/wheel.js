@@ -8,9 +8,9 @@ class WheelManager {
         this.riggedOrder = []; // Thứ tự điều hướng bí mật
         this.wheel = document.getElementById("wheel");
         this.colors = [
-            "#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", 
-            "#98D8C8", "#F7DC6F", "#BB8FCE", "#85C1E2",
-            "#F8B739", "#6C5CE7", "#FD79A8", "#00B894"
+            "#3369e8", "#009925", "#EEB211", "#d50f25",
+            "#3369e8", "#009925", "#EEB211", "#d50f25",
+            "#3369e8", "#009925", "#EEB211", "#d50f25",
         ];
     }
 
@@ -27,18 +27,17 @@ class WheelManager {
         const segmentAngle = 360 / this.names.length;
         let gradientStr = [];
         
-        // Shuffle màu để tránh trùng cạnh nhau
-        const shuffledColors = this.shuffleColors();
-
+        // Màu xen kẽ theo thứ tự, không shuffle
         this.names.forEach((name, index) => {
-            const color = shuffledColors[index % shuffledColors.length];
+            const color = this.colors[index % this.colors.length];
             gradientStr.push(`${color} ${index * segmentAngle}deg ${(index + 1) * segmentAngle}deg`);
 
             const span = document.createElement("span");
             span.className = "wheel-label";
             span.innerText = name;
             const rotateAngle = (index * segmentAngle) + (segmentAngle / 2);
-            span.style.transform = `rotate(${rotateAngle}deg) translateX(120px)`;
+            // Đặt text từ cánh cung vào tâm - bắt đầu từ 200px
+            span.style.transform = `rotate(${rotateAngle}deg) translateX(200px)`;
             this.wheel.appendChild(span);
         });
 
