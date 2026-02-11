@@ -93,3 +93,16 @@ setInterval(() => {
         saveToLocalStorage();
     }
 }, 3000);
+
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('show');
+}
+
+// Re-render wheel labels on resize for responsive text
+window.addEventListener('resize', () => {
+    if (wheelManager && wheelManager.names.length > 0) {
+        wheelManager.updateWheel();
+    }
+});

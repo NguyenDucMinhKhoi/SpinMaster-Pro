@@ -36,8 +36,10 @@ class WheelManager {
             span.className = "wheel-label";
             span.innerText = name;
             const rotateAngle = (index * segmentAngle) + (segmentAngle / 2);
-            // Đặt text từ cánh cung vào tâm - bắt đầu từ 200px
-            span.style.transform = `rotate(${rotateAngle}deg) translateX(200px)`;
+            // Đặt text - sử dụng % thay vì px cố định để responsive
+            const wheelRadius = this.wheel.offsetWidth / 2;
+            const labelOffset = wheelRadius * 0.62;
+            span.style.transform = `rotate(${rotateAngle}deg) translateX(${labelOffset}px)`;
             this.wheel.appendChild(span);
         });
 
