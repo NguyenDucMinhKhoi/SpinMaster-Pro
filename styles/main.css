@@ -125,7 +125,7 @@ body {
 /* Wheel Section */
 .wheel-section {
     flex: 2;
-    padding: 20px;
+    padding: 40px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -137,10 +137,10 @@ body {
 
 .wheel-container {
     position: relative;
-    width: min(90vh, 90vw);
-    height: min(90vh, 90vw);
-    max-width: 650px;
-    max-height: 650px;
+    width: min(85vh, 95vw);
+    height: min(85vh, 95vw);
+    max-width: 700px;
+    max-height: 700px;
 }
 
 .wheel-text-overlay {
@@ -177,7 +177,7 @@ body {
     height: 0;
     border-left: 35px solid transparent;
     border-right: 35px solid transparent;
-    border-top: 70px solid #1a237e;
+    border-top: 70px solid #009925;
     z-index: 10;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
@@ -244,21 +244,23 @@ body {
     top: 50%;
     left: 50%;
     transform-origin: 0 0;
-    font-weight: 700;
-    font-size: clamp(11px, 2.5vw, 28px);
+    font-weight: 300;
     color: #fff;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.8),
-        -1px -1px 2px rgba(0, 0, 0, 0.5),
-        1px 1px 0 rgba(0, 0, 0, 0.9);
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.3);
+    paint-order: stroke fill;
+    /* text-shadow: 
+        1px 1px 1px rgba(0, 0, 0, 0.4),
+        -1px -1px 1px rgba(0, 0, 0, 0.4),
+        1px -1px 1px rgba(0, 0, 0, 0.4),
+        -1px 1px 1px rgba(0, 0, 0, 0.4); */
     white-space: nowrap;
     padding: 0;
-    text-align: right;
-    letter-spacing: 0.5px;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    width: auto;
-    max-width: 45%;
-    overflow: visible;
+    text-align: center;
+    letter-spacing: 0.3px;
+    font-family: 'Roboto', -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.1;
 }
 
 /* Sidebar Panel */
@@ -322,9 +324,9 @@ body {
 .btn-action {
     flex: 1;
     padding: 10px;
-    border: 1px solid #1976d2;
-    background: #fff;
-    color: #1976d2;
+    border: none;
+    background: #1976d2;
+    color: #fff;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
@@ -337,9 +339,17 @@ body {
 }
 
 .btn-action:hover {
-    background: #1976d2;
+    background: #1565c0;
     color: #fff;
 }
+
+.btn-action .dropdown-arrow {
+    font-size: 10px;
+    margin-left: 2px;
+    opacity: 0.7;
+}
+
+
 
 .textarea-input {
     width: 100%;
@@ -392,37 +402,38 @@ body {
 }
 
 /* Results Tab Styles */
-.results-header {
+.results-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
-.btn-clear-results {
-    padding: 8px 15px;
-    background: #f44336;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
+.btn-results-action {
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 20px;
     cursor: pointer;
+    font-size: 13px;
+    color: #333;
+    font-weight: 400;
     display: flex;
     align-items: center;
     gap: 5px;
     transition: background 0.2s;
 }
 
-.btn-clear-results:hover {
-    background: #d32f2f;
+.btn-results-action:hover {
+    background: #f5f5f5;
 }
 
 .results-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: calc(100vh - 350px);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-height: 200px;
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
+    padding: 0;
 }
 
 .no-results {
@@ -433,39 +444,14 @@ body {
 }
 
 .result-item {
-    background: #f8f9fa;
-    border-left: 4px solid #1976d2;
-    border-radius: 6px;
-    padding: 12px;
-    transition: transform 0.2s;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    color: #333;
 }
 
-.result-item:hover {
-    transform: translateX(5px);
-    background: #e3f2fd;
-}
-
-.result-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 11px;
-    color: #666;
-}
-
-.result-number {
-    font-weight: 700;
-    color: #1976d2;
-}
-
-.result-time {
-    font-style: italic;
-}
-
-.result-winner {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.result-item:last-child {
+    border-bottom: none;
 }
 
 .winner-icon {
@@ -498,12 +484,28 @@ body {
 
 .modal-content {
     background: #fff;
-    padding: 50px;
-    border-radius: 16px;
+    border-radius: 8px;
     text-align: center;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
-    max-width: 500px;
+    max-width: 382px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: #009925;
+    padding: 16px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: left;
+    line-height: 1.3;
+    font-family: 'Roboto', -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 @keyframes modalSlideIn {
@@ -518,16 +520,24 @@ body {
 }
 
 .modal h2 {
-    margin: 0 0 20px 0;
-    color: #333;
-    font-size: 28px;
+    margin: 0;
+    color: #000;
+    font-size: 22px;
+}
+
+.modal-body {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal .winner-name {
-    font-size: 48px;
-    color: #d32f2f;
-    margin: 20px 0;
-    font-weight: bold;
+    font-size: 32px;
+    color: #000;
+    margin: 8px 0;
+    font-weight: 300;
+    font-family: 'Roboto', -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -538,43 +548,45 @@ body {
 
 .modal-actions {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.btn-remove-winner {
-    padding: 12px 25px;
-    background: #f44336;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    color: #fff;
-    font-weight: 600;
-    transition: background-color 0.2s;
-    display: flex;
+    gap: 8px;
     align-items: center;
-    gap: 5px;
+    justify-content: flex-end;
+    padding: 8px;
 }
 
-.btn-remove-winner:hover {
-    background: #d32f2f;
+.btn-remove-winner,
+.btn-remove-all {
+    padding: 8px 16px;
+    background: #1976d2;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+    text-transform: none;
+    transition: filter 0.2s;
+}
+
+.btn-remove-winner:hover,
+.btn-remove-all:hover {
+    filter: brightness(0.85);
 }
 
 .btn-close {
-    padding: 12px 30px;
-    background: #1976d2;
+    padding: 8px 16px;
+    background: transparent;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
     transition: background-color 0.2s;
 }
 
 .btn-close:hover {
-    background: #1565c0;
+    background: #f0f0f0;
 }
 
 /* Responsive */
@@ -589,32 +601,34 @@ body {
 
     .main-content {
         flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .wheel-section {
         flex: none;
-        padding: 15px;
-        min-height: 50vh;
+        padding: 25px 15px;
+        min-height: auto;
     }
 
     .wheel-container {
-        width: min(80vw, 80vh);
-        height: min(80vw, 80vh);
-        max-width: 400px;
-        max-height: 400px;
+        width: min(90vw, 80vh);
+        height: min(90vw, 80vh);
+        max-width: 500px;
+        max-height: 500px;
     }
 
     .sidebar-panel {
         width: 100%;
         max-height: none;
-        flex: 1;
+        flex: none;
     }
 
     .pointer {
         right: -25px;
         border-left: 25px solid transparent;
         border-right: 25px solid transparent;
-        border-top: 50px solid #1a237e;
+        border-top: 50px solid #009925;
     }
 
     .wheel-center {
@@ -624,7 +638,6 @@ body {
 
     .modal-content {
         margin: 20px;
-        padding: 30px;
     }
 
     .modal h2 {
@@ -632,21 +645,21 @@ body {
     }
 
     .modal .winner-name {
-        font-size: 32px;
+        font-size: 40px;
     }
 }
 
 @media (max-width: 480px) {
     .wheel-section {
-        padding: 10px;
-        min-height: 45vh;
+        padding: 20px 10px;
+        min-height: auto;
     }
 
     .wheel-container {
-        width: min(85vw, 70vh);
-        height: min(85vw, 70vh);
-        max-width: 320px;
-        max-height: 320px;
+        width: min(95vw, 75vh);
+        height: min(95vw, 75vh);
+        max-width: 420px;
+        max-height: 420px;
     }
 
     .panel-actions {
@@ -666,7 +679,7 @@ body {
         right: -20px;
         border-left: 20px solid transparent;
         border-right: 20px solid transparent;
-        border-top: 40px solid #1a237e;
+        border-top: 40px solid #009925;
     }
 
     .wheel-center {

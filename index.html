@@ -12,6 +12,11 @@
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
     <!-- Styles -->
     <link rel="stylesheet" href="styles/main.css" />
   </head>
@@ -142,14 +147,17 @@
                 <button class="btn-action" onclick="shuffleList()">
                   <span>🔀</span>
                   <span>Tráo đổi</span>
+                  <span class="dropdown-arrow">▾</span>
                 </button>
                 <button class="btn-action" onclick="sortList()">
                   <span>↕️</span>
                   <span>Sắp xếp</span>
+                  <span class="dropdown-arrow">▾</span>
                 </button>
                 <button class="btn-action">
                   <span>🖼️</span>
                   <span>Thêm ảnh</span>
+                  <span class="dropdown-arrow">▾</span>
                 </button>
               </div>
 
@@ -198,16 +206,14 @@ Jack</textarea
 
             <!-- Results Tab Content -->
             <div id="resultsContent" style="display: none">
-              <div class="results-header">
-                <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #333">
-                  Lịch sử quay
-                </h3>
-                <button
-                  class="btn-clear-results"
-                  onclick="uiManager.clearResults()"
-                >
-                  <span>🗑️</span>
-                  <span>Xóa tất cả</span>
+              <div class="results-actions">
+                <button class="btn-results-action" onclick="uiManager.sortResults()">
+                  <span>↕️</span>
+                  <span>Sắp xếp</span>
+                </button>
+                <button class="btn-results-action" onclick="uiManager.clearResults()">
+                  <span>✕</span>
+                  <span>Xóa danh sách</span>
                 </button>
               </div>
               <div id="resultsContainer" class="results-list">
@@ -243,13 +249,20 @@ Jack</textarea
     <!-- Winner Modal -->
     <div class="modal" id="resultModal">
       <div class="modal-content">
-        <h2>🎉 Chúng ta có người chiến thắng! 🎉</h2>
-        <div class="winner-name" id="winnerName"></div>
+        <div class="modal-header">
+          <h2>Chúng ta có một người chiến thắng!</h2>
+        </div>
+        <div class="modal-body">
+          <div class="winner-name" id="winnerName"></div>
+        </div>
         <div class="modal-actions">
-          <button class="btn-remove-winner" onclick="removeWinnerFromList()">
-            🗑️ Xóa khỏi danh sách
-          </button>
           <button class="btn-close" onclick="closeModal()">Đóng</button>
+          <button class="btn-remove-winner" onclick="removeWinnerFromList()">
+            Xóa tên
+          </button>
+          <button class="btn-remove-all" onclick="removeAllSameWinner()">
+            Xóa tất cả tên
+          </button>
         </div>
       </div>
     </div>

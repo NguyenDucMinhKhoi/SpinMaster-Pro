@@ -28,6 +28,20 @@ class WheelManager {
         let gradientStr = [];
         
         // Màu xen kẽ theo thứ tự, không shuffle
+        // Tính kích thước để căn giữa chữ trong mỗi cánh cung
+        const wheelRadius = this.wheel.offsetWidth / 2;
+        const centerHubRadius = Math.max(25, wheelRadius * 0.14);
+        const innerTextStart = centerHubRadius + 5;
+        const outerTextEnd = wheelRadius * 0.95;
+        const textLength = outerTextEnd - innerTextStart;
+
+        // Font size cố định — chỉ co lại khi quá nhiều tên và cung quá hẹp
+        const midRadius = (innerTextStart + outerTextEnd) / 2;
+        const segmentAngleRad = (segmentAngle / 2) * Math.PI / 180;
+        const arcWidth = midRadius * 2 * Math.sin(segmentAngleRad);
+        const idealSize = wheelRadius * 0.17;
+        const fontSize = Math.max(20, Math.min(idealSize, arcWidth * 0.75));
+
         this.names.forEach((name, index) => {
             const color = this.colors[index % this.colors.length];
             gradientStr.push(`${color} ${index * segmentAngle}deg ${(index + 1) * segmentAngle}deg`);
@@ -36,14 +50,16 @@ class WheelManager {
             span.className = "wheel-label";
             span.innerText = name;
             const rotateAngle = (index * segmentAngle) + (segmentAngle / 2);
-            // Đặt text - sử dụng % thay vì px cố định để responsive
-            const wheelRadius = this.wheel.offsetWidth / 2;
-            const labelOffset = wheelRadius * 0.62;
-            span.style.transform = `rotate(${rotateAngle}deg) translateX(${labelOffset}px)`;
+
+            // Đặt chữ tại trung điểm giữa hub và rìa cánh cung
+            const textCenter = (innerTextStart + outerTextEnd) / 2;
+            span.style.fontSize = `${fontSize}px`;
+            span.style.maxWidth = `${textLength * 0.95}px`;
+            span.style.transform = `rotate(${rotateAngle}deg) translate(${textCenter}px, -50%) translateX(-50%)`;
             this.wheel.appendChild(span);
         });
 
-        this.wheel.style.background = `conic-gradient(${gradientStr.join(", ")})`;
+        this.wheel.style.background = `conic-gradient(from 90deg, ${gradientStr.join(", ")})`;
         // KHÔNG reset transform - giữ nguyên vị trí hiện tại
     }
 
@@ -72,8 +88,14 @@ class WheelManager {
         let selectedName;
 
         // KỊCH BẢN BÍ MẬT: Ưu tiên riggedOrder nếu có
-        if (this.spinCount < this.riggedOrder.length && this.names.includes(this.riggedOrder[this.spinCount])) {
-            selectedName = this.riggedOrder[this.spinCount];
+        // Trường hợp đặc biệt: 4 người có "An" → An ra đầu tiên
+        let activeRiggedOrder = this.riggedOrder;
+        if (this.names.length === 4 && this.names.includes("An")) {
+            activeRiggedOrder = ["An"];
+        }
+
+        if (this.spinCount < activeRiggedOrder.length && this.names.includes(activeRiggedOrder[this.spinCount])) {
+            selectedName = activeRiggedOrder[this.spinCount];
             // Tìm TẤT CẢ các vị trí có tên này
             const allIndices = this.names.map((name, idx) => name === selectedName ? idx : -1)
                                          .filter(idx => idx !== -1);
@@ -114,8 +136,10 @@ class WheelManager {
 
         this.spinCount++;
 
+        const winnerColor = this.colors[targetIndex % this.colors.length];
         return {
             winner: selectedName,
+            color: winnerColor,
             duration: 5000
         };
     }

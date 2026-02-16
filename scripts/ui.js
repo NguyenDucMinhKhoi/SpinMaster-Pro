@@ -172,9 +172,20 @@ class UIManager {
         });
     }
 
-    showWinnerModal(winner) {
+    showWinnerModal(winner, color = '#d32f2f') {
         const modal = document.getElementById('resultModal');
         document.getElementById('winnerName').innerText = winner;
+        
+        // Đổi màu header và buttons theo màu xanh lá cố định
+        const modalHeader = modal.querySelector('.modal-header');
+        if (modalHeader) {
+            modalHeader.style.backgroundColor = '#009925';
+        }
+        // Đổi màu các nút action
+        modal.querySelectorAll('.btn-remove-winner, .btn-remove-all').forEach(btn => {
+            btn.style.backgroundColor = '#1976d2';
+        });
+        
         modal.classList.add('show');
         modal.style.display = 'flex';
         
@@ -198,36 +209,46 @@ class UIManager {
     removeWinner(winnerName) {
         const textarea = document.getElementById('nameInput');
         const winnerElement = document.getElementById('winnerName');
-        if (!textarea) return;
+        if (!textarea || !winnerName) return;
         
-        // Hiệu ứng xóa
-        winnerElement.classList.add('removing');
+        this.isUpdatingProgrammatically = true;
+        
+        let names = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
+        
+        // Xóa CHỈ 1 instance đầu tiên
+        const idx = names.indexOf(winnerName.trim());
+        if (idx !== -1) names.splice(idx, 1);
+        
+        textarea.value = names.join('\n');
+        this.loadFromTextarea();
         
         setTimeout(() => {
-            // Set flag để ngăn trigger oninput
-            this.isUpdatingProgrammatically = true;
-            
-            // Lấy danh sách hiện tại
-            let names = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
-            
-            // Xóa TẤT CẢ các tên trùng với tên trúng giải
-            names = names.filter(name => name !== winnerName);
-            
-            // Cập nhật lại textarea
-            textarea.value = names.join('\n');
-            
-            // Cập nhật vòng quay để xóa tên
-            this.loadFromTextarea();
-            
-            // Reset flag
-            setTimeout(() => {
-                this.isUpdatingProgrammatically = false;
-            }, 100);
-            
-            // Đóng modal
-            winnerElement.classList.remove('removing');
-            this.closeWinnerModal();
-        }, 300);
+            this.isUpdatingProgrammatically = false;
+        }, 100);
+        
+        this.closeWinnerModal();
+    }
+
+    removeAllOfName(winnerName) {
+        const textarea = document.getElementById('nameInput');
+        const winnerElement = document.getElementById('winnerName');
+        if (!textarea || !winnerName) return;
+        
+        this.isUpdatingProgrammatically = true;
+        
+        let names = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
+        
+        // Xóa TẤT CẢ các tên trùng
+        names = names.filter(name => name.trim() !== winnerName.trim());
+        
+        textarea.value = names.join('\n');
+        this.loadFromTextarea();
+        
+        setTimeout(() => {
+            this.isUpdatingProgrammatically = false;
+        }, 100);
+        
+        this.closeWinnerModal();
     }
 
     saveResult(winner) {
@@ -248,6 +269,13 @@ class UIManager {
         return saved ? JSON.parse(saved) : [];
     }
 
+    sortResults() {
+        const results = this.getResults();
+        results.sort((a, b) => a.winner.localeCompare(b.winner, 'vi'));
+        localStorage.setItem('spinResults', JSON.stringify(results));
+        this.updateResultsTab();
+    }
+
     clearResults() {
         localStorage.removeItem('spinResults');
         this.updateResultsTab();
@@ -266,16 +294,7 @@ class UIManager {
         }
         
         resultsContainer.innerHTML = results.map((result, index) => `
-            <div class="result-item">
-                <div class="result-header">
-                    <span class="result-number">#${results.length - index}</span>
-                    <span class="result-time">${result.date}</span>
-                </div>
-                <div class="result-winner">
-                    <span class="winner-icon">🏆</span>
-                    <span class="winner-text">${result.winner}</span>
-                </div>
-            </div>
+            <div class="result-item">${result.winner}</div>
         `).join('');
     }
 }

@@ -36,7 +36,7 @@ function spinWheel() {
     setTimeout(() => {
         wheelManager.isSpinning = false;
         wheelManager.wheel.classList.remove('spinning');
-        uiManager.showWinnerModal(result.winner);
+        uiManager.showWinnerModal(result.winner, result.color);
         audioManager.playApplause();
     }, result.duration);
 }
@@ -47,10 +47,17 @@ function closeModal() {
     audioManager.stopApplause();
 }
 
-// Remove winner from list
+// Remove winner from list (one instance)
 function removeWinnerFromList() {
-    const winnerName = document.getElementById('winnerName').innerText;
+    const winnerName = document.getElementById('winnerName').innerText.trim();
     uiManager.removeWinner(winnerName);
+    audioManager.stopApplause();
+}
+
+// Remove ALL instances of winner from list
+function removeAllSameWinner() {
+    const winnerName = document.getElementById('winnerName').innerText.trim();
+    uiManager.removeAllOfName(winnerName);
     audioManager.stopApplause();
 }
 
