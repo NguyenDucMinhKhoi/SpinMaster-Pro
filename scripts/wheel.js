@@ -50,13 +50,23 @@ class WheelManager {
             const span = document.createElement("span");
             span.className = "wheel-label";
             span.innerText = name;
+
+            // Blue (#3369e8) và Red (#d50f25) → chữ trắng, Green (#009925) và Yellow (#EEB211) → chữ đen
+            if (color === "#3369e8" || color === "#d50f25") {
+                span.style.color = "#fff";
+            } else {
+                span.style.color = "#000";
+            }
+
             const rotateAngle = (index * segmentAngle) + (segmentAngle / 2);
 
-            // Đặt chữ tại trung điểm giữa hub và rìa cánh cung
-            const textCenter = (innerTextStart + outerTextEnd) / 2;
+            // Khoảng cách cố định từ rìa = 10px, chữ bắt đầu từ đó hướng vào tâm
+            const edgePadding = 5;
+            const textStartFromCenter = outerTextEnd - edgePadding;
             span.style.fontSize = `${fontSize}px`;
             span.style.maxWidth = `${textLength * 0.95}px`;
-            span.style.transform = `rotate(${rotateAngle}deg) translate(${textCenter}px, -50%) translateX(-50%)`;
+            span.style.textAlign = 'right';
+            span.style.transform = `rotate(${rotateAngle}deg) translate(${textStartFromCenter}px, -50%) translateX(-100%)`;
             this.wheel.appendChild(span);
         });
 
@@ -65,27 +75,11 @@ class WheelManager {
     }
 
     setNames(names) {
-        // Detect if the base set of names changed (not just removal from spinning)
         const sortedNew = [...names].sort().join('|');
         const sortedOld = [...this.names].sort().join('|');
         
-        // Reset rigged khi:
-        // 1. Tên được thêm lại (dài hơn hoặc khác biệt)
-        // 2. Danh sách được viết lại hoàn toàn
-        const namesAdded = names.length > this.names.length;
-        const namesChanged = sortedNew !== sortedOld && namesAdded;
-        const fullRiggedPresent = this.riggedOrder.length > 0 && this.riggedOrder.every(n => names.includes(n));
-        const is4WithAn = names.length === 4 && names.includes('An');
-        
-        if (fullRiggedPresent || (namesChanged && (fullRiggedPresent || is4WithAn))) {
-            this.riggedUsed = new Set();
-        }
-        // Đặc biệt: reset khi chuyển sang scenario 4 người với An
-        if (is4WithAn && this.names.length !== 4) {
-            this.riggedUsed = new Set();
-        }
-        // Đặc biệt: reset khi chuyển sang scenario 6 người rigged
-        if (fullRiggedPresent && !this.riggedOrder.every(n => this.names.includes(n))) {
+        // Reset riggedUsed khi danh sách tên thay đổi
+        if (sortedNew !== sortedOld) {
             this.riggedUsed = new Set();
         }
         

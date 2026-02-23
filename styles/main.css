@@ -20,11 +20,11 @@ body {
 
 /* Header Navigation */
 .header {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 0 20px;
+    background-color: #F5F5F5;
+    padding: 0;
     position: relative;
     z-index: 100;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .nav-menu {
@@ -32,6 +32,7 @@ body {
     align-items: center;
     height: 50px;
     justify-content: space-between;
+    padding: 0 16px;
 }
 
 .brand-logo {
@@ -41,8 +42,10 @@ body {
 }
 
 .brand-name {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 21px;
+    line-height: normal;
+    margin: 0px;
+    font-weight: 400;
     color: #333;
 }
 
@@ -159,9 +162,9 @@ body {
 .click-to-spin {
     font-family: sans-serif;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 11px;
     fill: white;
-    filter: drop-shadow(0 0 10px #000);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 6px rgba(0, 0, 0, 0.5));
 }
 
 .click-to-spin {
@@ -215,8 +218,8 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     background-color: #fff;
     border-radius: 50%;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
@@ -244,9 +247,9 @@ body {
     top: 50%;
     left: 50%;
     transform-origin: 0 0;
-    font-weight: 300;
+    font-weight: 200;
     color: #fff;
-    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.3);
+    -webkit-text-stroke: none;
     paint-order: stroke fill;
     /* text-shadow: 
         1px 1px 1px rgba(0, 0, 0, 0.4),
@@ -255,7 +258,7 @@ body {
         -1px 1px 1px rgba(0, 0, 0, 0.4); */
     white-space: nowrap;
     padding: 0;
-    text-align: center;
+    text-align: left;
     letter-spacing: 0.3px;
     font-family: 'Roboto', -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow: hidden;
@@ -688,6 +691,6 @@ body {
     }
 
     .brand-name {
-        font-size: 16px;
+        font-size: 21px;
     }
 }
