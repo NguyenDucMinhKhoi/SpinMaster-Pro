@@ -54,13 +54,6 @@ function removeWinnerFromList() {
     audioManager.stopApplause();
 }
 
-// Remove ALL instances of winner from list
-function removeAllSameWinner() {
-    const winnerName = document.getElementById('winnerName').innerText.trim();
-    uiManager.removeAllOfName(winnerName);
-    audioManager.stopApplause();
-}
-
 // Utility functions for UI
 function shuffleList() {
     uiManager.shuffleItems();

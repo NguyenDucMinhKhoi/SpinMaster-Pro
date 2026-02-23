@@ -182,7 +182,7 @@ class UIManager {
             modalHeader.style.backgroundColor = color;
         }
         // Đổi màu các nút action
-        modal.querySelectorAll('.btn-remove-winner, .btn-remove-all').forEach(btn => {
+        modal.querySelectorAll('.btn-remove-winner').forEach(btn => {
             btn.style.backgroundColor = '#1976d2';
         });
         
@@ -218,28 +218,6 @@ class UIManager {
         // Xóa CHỈ 1 instance đầu tiên
         const idx = names.indexOf(winnerName.trim());
         if (idx !== -1) names.splice(idx, 1);
-        
-        textarea.value = names.join('\n');
-        this.loadFromTextarea();
-        
-        setTimeout(() => {
-            this.isUpdatingProgrammatically = false;
-        }, 100);
-        
-        this.closeWinnerModal();
-    }
-
-    removeAllOfName(winnerName) {
-        const textarea = document.getElementById('nameInput');
-        const winnerElement = document.getElementById('winnerName');
-        if (!textarea || !winnerName) return;
-        
-        this.isUpdatingProgrammatically = true;
-        
-        let names = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
-        
-        // Xóa TẤT CẢ các tên trùng
-        names = names.filter(name => name.trim() !== winnerName.trim());
         
         textarea.value = names.join('\n');
         this.loadFromTextarea();
