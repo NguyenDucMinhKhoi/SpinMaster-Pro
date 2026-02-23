@@ -46,17 +46,24 @@ class WheelManager {
         const segmentAngleRad = (segmentAngle / 2) * Math.PI / 180;
         const arcWidth = textMidRadius * 2 * Math.sin(segmentAngleRad);
 
-        // Font size ~ 55% chiều cao cung — khớp tỷ lệ vòng nhỏ hơn
-        const arcFontSize = arcWidth * 0.55;
-
         // Giới hạn phụ: tên dài thì co font để vừa chiều dài segment
         const maxNameLength = Math.max(...this.names.map(n => n.length));
         const lengthConstraint = (textLength * 0.88) / Math.max(maxNameLength * 0.52, 1);
 
-        // Sàn tối thiểu & trần tối đa — tỷ lệ cao hơn cho vòng nhỏ
-        const minSize = Math.max(11, wheelRadius * 0.055);
-        const maxSize = wheelRadius * 0.26;
-        const fontSize = Math.max(minSize, Math.min(arcFontSize, lengthConstraint, maxSize));
+        let fontSize;
+        if (numNames === 1) {
+            // 1 tên: ép font = nửa bán kính vòng xoay (nửa cánh cung)
+            const halfArc = wheelRadius * 0.5;
+            fontSize = Math.min(halfArc, lengthConstraint);
+        } else {
+            // Font size ~ 55% chiều cao cung
+            const arcFontSize = arcWidth * 0.55;
+
+            // Sàn tối thiểu & trần tối đa
+            const minSize = Math.max(11, wheelRadius * 0.055);
+            const maxSize = wheelRadius * 0.26;
+            fontSize = Math.max(minSize, Math.min(arcFontSize, lengthConstraint, maxSize));
+        }
 
         // Font-weight
         const fontWeight = 300;
