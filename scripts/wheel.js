@@ -36,12 +36,28 @@ class WheelManager {
         const outerTextEnd = wheelRadius * 0.95;
         const textLength = outerTextEnd - innerTextStart;
 
-        // Font size cố định — chỉ co lại khi quá nhiều tên và cung quá hẹp
-        const midRadius = (innerTextStart + outerTextEnd) / 2;
+        // === FONT SIZE TỶ LỆ VỚI CÁNH CUNG ===
+        const numNames = this.names.length;
+
+        // Tính chiều rộng cung tại ~55% bán kính
+        const textMidRadius = innerTextStart + textLength * 0.55;
         const segmentAngleRad = (segmentAngle / 2) * Math.PI / 180;
-        const arcWidth = midRadius * 2 * Math.sin(segmentAngleRad);
-        const idealSize = wheelRadius * 0.17;
-        const fontSize = Math.max(20, Math.min(idealSize, arcWidth * 0.75));
+        const arcWidth = textMidRadius * 2 * Math.sin(segmentAngleRad);
+
+        // Font size ~ 55% chiều cao cung — khớp tỷ lệ vòng nhỏ hơn
+        const arcFontSize = arcWidth * 0.55;
+
+        // Giới hạn phụ: tên dài thì co font để vừa chiều dài segment
+        const maxNameLength = Math.max(...this.names.map(n => n.length));
+        const lengthConstraint = (textLength * 0.88) / Math.max(maxNameLength * 0.52, 1);
+
+        // Sàn tối thiểu & trần tối đa — tỷ lệ cao hơn cho vòng nhỏ
+        const minSize = Math.max(11, wheelRadius * 0.055);
+        const maxSize = wheelRadius * 0.26;
+        const fontSize = Math.max(minSize, Math.min(arcFontSize, lengthConstraint, maxSize));
+
+        // Font-weight
+        const fontWeight = 300;
 
         this.names.forEach((name, index) => {
             const color = this.colors[index % this.colors.length];
@@ -60,10 +76,11 @@ class WheelManager {
 
             const rotateAngle = (index * segmentAngle) + (segmentAngle / 2);
 
-            // Khoảng cách cố định từ rìa = 10px, chữ bắt đầu từ đó hướng vào tâm
+            // Chữ bắt đầu gần rìa, hướng vào tâm
             const edgePadding = 5;
             const textStartFromCenter = outerTextEnd - edgePadding;
             span.style.fontSize = `${fontSize}px`;
+            span.style.fontWeight = fontWeight;
             span.style.maxWidth = `${textLength * 0.95}px`;
             span.style.textAlign = 'right';
             span.style.transform = `rotate(${rotateAngle}deg) translate(${textStartFromCenter}px, -50%) translateX(-100%)`;
@@ -151,19 +168,47 @@ class WheelManager {
         const currentPosition = this.currentRotation % 360;
         let additionalRotation = targetRotation - currentPosition;
         
-        // Đảm bảo quay thuận chiều và ít nhất 6 vòng
+        // Đảm bảo quay thuận chiều và ít nhất 8 vòng (nhiều hơn = hồi hộp hơn)
         if (additionalRotation < 0) {
             additionalRotation += 360;
         }
-        this.currentRotation += 2160 + additionalRotation;
-        
-        this.wheel.style.transform = `rotate(${this.currentRotation}deg)`;
+        const totalRotation = 2880 + additionalRotation; // 8 vòng
+        const startRotation = this.currentRotation;
+        const endRotation = startRotation + totalRotation;
+        this.currentRotation = endRotation;
+
+        // === ANIMATION HỒI HỘP: nhanh → chậm dần dần mượt mà ===
+        const totalDuration = 8000; // 8 giây tổng
+        const startTime = performance.now();
+
+        // Easing mượt liên tục — không giật khi chuyển giai đoạn
+        // Dùng ease-out bậc 4: nhanh ở đầu, chậm dần RẤT mượt về cuối
+        // t=30% → đã đi 76% quãng đường (nhanh)
+        // t=60% → đã đi 97% (chậm dần)
+        // t=80% → đã đi 99.8% (rất chậm, từ từ nhích)
+        // t=100% → 100% (dừng mượt, velocity = 0)
+        const suspenseEasing = (t) => {
+            return 1 - Math.pow(1 - t, 4);
+        };
+
+        const animate = (now) => {
+            const elapsed = now - startTime;
+            const t = Math.min(elapsed / totalDuration, 1);
+            const progress = suspenseEasing(t);
+            const currentAngle = startRotation + totalRotation * progress;
+            this.wheel.style.transform = `rotate(${currentAngle}deg)`;
+
+            if (t < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        requestAnimationFrame(animate);
 
         const winnerColor = this.colors[targetIndex % this.colors.length];
         return {
             winner: selectedName,
             color: winnerColor,
-            duration: 5000
+            duration: totalDuration + 300 // chờ thêm chút sau khi dừng
         };
     }
 
@@ -171,6 +216,7 @@ class WheelManager {
         this.currentRotation = 0;
         this.isSpinning = false;
         this.riggedUsed = new Set();
+        this.wheel.style.transition = 'none';
         this.wheel.style.transform = `rotate(0deg)`;
     }
 
