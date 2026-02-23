@@ -8,11 +8,13 @@ class WheelManager {
         this.riggedUsed = new Set(); // Theo dõi tên đã được rigged
         this.lastNamesSnapshot = ''; // Snapshot dé phát hiện thay đổi
         this.wheel = document.getElementById("wheel");
+        this.pointer = document.querySelector(".pointer");
         this.colors = [
             "#3369e8", "#009925", "#EEB211", "#d50f25",
             "#3369e8", "#009925", "#EEB211", "#d50f25",
             "#3369e8", "#009925", "#EEB211", "#d50f25",
         ];
+        this._startPointerColorUpdater();
     }
 
     updateWheel() {
@@ -198,6 +200,9 @@ class WheelManager {
             const currentAngle = startRotation + totalRotation * progress;
             this.wheel.style.transform = `rotate(${currentAngle}deg)`;
 
+            // Cập nhật màu mũi tên realtime khi quay
+            this.updatePointerColor();
+
             if (t < 1) {
                 requestAnimationFrame(animate);
             }
@@ -222,6 +227,49 @@ class WheelManager {
 
     getColors() {
         return this.colors;
+    }
+
+    // Tính màu segment đang ở vị trí mũi tên (3h = 0°)
+    getPointerColor() {
+        if (this.names.length < 1) return "#009925";
+        const segmentAngle = 360 / this.names.length;
+        // Lấy góc hiện tại từ transform
+        const style = window.getComputedStyle(this.wheel);
+        const transform = style.transform;
+        let angle = 0;
+        if (transform && transform !== 'none') {
+            const values = transform.split('(')[1]?.split(')')[0]?.split(',');
+            if (values && values.length >= 2) {
+                const a = parseFloat(values[0]);
+                const b = parseFloat(values[1]);
+                angle = Math.atan2(b, a) * (180 / Math.PI);
+            }
+        }
+        // Chuẩn hóa về 0-360
+        angle = ((angle % 360) + 360) % 360;
+        // Mũi tên ở 3h = 0° trong hệ gradient (from 90deg)
+        // Segment index tại vị trí mũi tên
+        const pointerAngle = (360 - angle) % 360;
+        const index = Math.floor(pointerAngle / segmentAngle) % this.names.length;
+        return this.colors[index % this.colors.length];
+    }
+
+    // Cập nhật màu mũi tên
+    updatePointerColor() {
+        if (this.pointer) {
+            this.pointer.style.borderTopColor = this.getPointerColor();
+        }
+    }
+
+    // Updater chạy liên tục khi idle (có animation CSS)
+    _startPointerColorUpdater() {
+        const update = () => {
+            if (!this.isSpinning) {
+                this.updatePointerColor();
+            }
+            requestAnimationFrame(update);
+        };
+        requestAnimationFrame(update);
     }
 
     shuffleColors() {
