@@ -134,9 +134,12 @@ class WheelManager {
 
         // KỊCH BẢN BÍ MẬT: Tìm tên rigged tiếp theo còn trong danh sách
         // Trường hợp đặc biệt: 4 người có "An" → An ra đầu tiên
+        // Trường hợp đặc biệt: 4 người có "Anh" (không có "An") → Anh ra đầu tiên
         let activeOrder = this.riggedOrder;
         if (this.names.length === 4 && this.names.includes("An")) {
             activeOrder = ["An"];
+        } else if (this.names.length === 4 && this.names.includes("Anh") && !this.names.includes("An")) {
+            activeOrder = ["Anh"];
         }
 
         let riggedFound = false;
